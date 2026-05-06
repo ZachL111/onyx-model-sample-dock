@@ -1,0 +1,73 @@
+{
+  "repo": "onyx-model-sample-dock",
+  "language": "Haskell",
+  "category": "ML utilities",
+  "goal": "Create a Haskell reference implementation for sample workflows, centered on policy evaluation, deny and allow fixtures, and explainable decision traces.",
+  "review_model": {
+    "terms": [
+      "feature drift",
+      "window width",
+      "metric stability",
+      "explainability"
+    ],
+    "lanes": [
+      "ship",
+      "watch",
+      "hold"
+    ],
+    "score": "signal * 2 + slack + confidence - drag * 3",
+    "purpose": "surface the domain-specific cases that need the most careful review"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "focus": "feature drift",
+      "signal": 76,
+      "slack": 47,
+      "drag": 22,
+      "confidence": 94,
+      "score": 227,
+      "lane": "ship"
+    },
+    {
+      "name": "stress",
+      "focus": "window width",
+      "signal": 52,
+      "slack": 54,
+      "drag": 31,
+      "confidence": 69,
+      "score": 134,
+      "lane": "watch"
+    },
+    {
+      "name": "edge",
+      "focus": "metric stability",
+      "signal": 47,
+      "slack": 33,
+      "drag": 14,
+      "confidence": 51,
+      "score": 136,
+      "lane": "watch"
+    },
+    {
+      "name": "recovery",
+      "focus": "explainability",
+      "signal": 64,
+      "slack": 42,
+      "drag": 20,
+      "confidence": 46,
+      "score": 156,
+      "lane": "ship"
+    },
+    {
+      "name": "stale",
+      "focus": "feature drift",
+      "signal": 64,
+      "slack": 34,
+      "drag": 17,
+      "confidence": 70,
+      "score": 181,
+      "lane": "ship"
+    }
+  ]
+}
