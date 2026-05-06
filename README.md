@@ -1,43 +1,68 @@
 # onyx-model-sample-dock
 
-onyx-model-sample-dock is a Haskell project for ml utilities. It focuses on this technical goal: Create a Haskell reference implementation for sample workflows, centered on policy evaluation, deny and allow fixtures, and explainable decision traces.
+`onyx-model-sample-dock` treats ml utilities as a local verification problem. The Haskell implementation is intentionally narrow, but the fixtures and notes make the behavior explicit.
 
-## Why it exists
+## Onyx Model Sample Dock Checkpoints
 
-Small engineering tools are easiest to trust when their rules are explicit, testable, and cheap to run locally. This repository packages a focused model with fixture data and a local verification path so behavior can be reviewed without external services.
+Treat the compact fixture as the contract and the extended examples as a scratchpad. The code should stay boring enough that a change in behavior is obvious from the test output.
 
-## Features
+## What This Is For
 
-- Deterministic policy scoring over fixture scenarios.
-- Clear accept or review decisions based on a documented threshold.
-- A command-line or local test path for quick validation.
-- Golden fixture data for repeatable checks.
-- Minimal dependencies and a compact project layout.
+The repository exists to keep a technical idea small enough to reason about. The implementation avoids external dependencies where possible, then uses fixtures to make changes easy to review.
+
+## Useful Pieces
+
+- Models feature signals with deterministic scoring and explicit review decisions.
+- Uses fixture data to keep metric checks changes visible in code review.
+- Includes extended examples for windowed behavior, including `surge` and `degraded`.
+- Documents explainable outputs tradeoffs in `docs/operations.md`.
+- Runs locally with a single verification command and no external credentials.
 
 ## Architecture Notes
 
-The core module exposes a small scoring API. Inputs are simple numeric signals: demand, capacity, latency, risk, and weight. The score uses a threshold of 152, risk penalty 4, latency penalty 3, and weight bonus 5. Tests exercise the public API against the fixture cases in `fixtures/cases.csv`.
+The design is intentionally direct: parse or construct a signal, score it, classify it, and verify the expected branch. This makes the repository useful for studying ml utilities behavior without needing a service or database unless the language project itself is SQL. The Haskell code keeps the pure scoring function isolated so tests can check it without setup.
 
-## Setup
+## Project Layout
 
-Install the Haskell toolchain and run commands from the repository root.
+- `src`: primary implementation
+- `tests`: verification harness
+- `fixtures`: compact golden scenarios
+- `examples`: expanded scenario set
+- `metadata`: project constants and verification metadata
+- `docs`: operations and extension notes
+- `scripts`: local verification and audit commands
 
-## Usage
+## Tooling
+
+Use a normal shell with Haskell available on `PATH`. The verifier is written as a PowerShell script because the portfolio was assembled on Windows.
+
+## Local Workflow
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-The verification script builds or runs the project and checks the fixture decisions.
+This runs the language-level build or test path against the compact fixture set.
 
-## Tests
+## Quality Gate
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
 ```
 
-## Limitations And Roadmap
+The audit command checks repository structure and README constraints before it delegates to the verifier.
 
-- The fixture set is intentionally small so it can be audited by hand.
-- Future work could add richer domain-specific input adapters.
-- The model is a local demonstration and does not claim production use.
+## Case Study
+
+`baseline` is the first example I would inspect because it lands on the `review` path with a score of 118. The broader file also keeps `degraded` at 12 and `surge` at 259, which gives the model a useful low-to-high spread.
+
+## Scope
+
+The scoring model is simple by design. More domain-specific behavior should be added through explicit adapters or extra fixture classes rather than hidden constants.
+
+## Expansion Ideas
+
+- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
+- Add a short report command that prints the score breakdown for a single scenario.
+- Add malformed input fixtures so the failure path is as visible as the happy path.
+- Add one more ml utilities fixture that focuses on a malformed or borderline input.
