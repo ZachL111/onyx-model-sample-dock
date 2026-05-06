@@ -1,0 +1,17 @@
+{
+  "repo": "onyx-model-sample-dock",
+  "thresholds": {
+    "signal": 3,
+    "slack": 1,
+    "confidence": 1,
+    "drag": 4,
+    "ship": 201,
+    "watch": 121
+  },
+  "terms": [
+    "feature drift",
+    "window width",
+    "metric stability",
+    "explainability"
+  ]
+}
